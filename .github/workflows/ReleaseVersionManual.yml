@@ -1,0 +1,43 @@
+name: ReleaseCreate
+
+on:
+  workflow_dispatch:
+    inputs: 
+      version:
+        description: "Me diga, qual será a version?"
+        required: true 
+        default: "v1.0.0"
+      description:
+        description: "OPCIONALMENTE, voce TEM que colocar uma descricao, mas nao se preucupa é OPCIONAL, tendeu. "
+        required: true
+        default: "Como teria o default se é obrigatório colocar a version/description?"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: createZIP
+        run: |
+          zip -r release-${{ github.event.inputs.version }}.zip .
+  
+      - name: publishRelease
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: "lancada a versao ${{ github.event.inputs.version }}"
+          body: "Release feita pelo githubs automacoes"
+          draft: false
+          prerelease: false
+          files: release-${{ github.event.inputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
