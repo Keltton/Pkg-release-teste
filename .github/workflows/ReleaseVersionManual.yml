@@ -1,4 +1,4 @@
-name: ReleaseCreate
+name: ReleaseCreateManual
 
 on:
   workflow_dispatch:
