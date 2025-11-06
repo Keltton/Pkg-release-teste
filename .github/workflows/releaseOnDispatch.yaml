@@ -1,0 +1,31 @@
+name: ReleaseCreate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: createZIP
+        run: |
+          zip -r release-package.zip .
+  
+      - name: publishRelease
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{github.run_number}}
+          name: "lancada a versao v1.0.${{github.run_number}}"
+          body: "Release feita pelo githubs automacoes"
+          draft: false
+          prerelease: false
+          files: release-package.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
